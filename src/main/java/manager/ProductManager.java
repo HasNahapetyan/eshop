@@ -33,8 +33,10 @@ public class ProductManager {
     }
 
     public Product getById(int id) {
-        try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("Select * from product where id = " + id);
+        String sql = "Select * from product where id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql,Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, String.valueOf(id));
+            ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
                 return getProductFromResultSet(resultSet);
             }
@@ -47,8 +49,9 @@ public class ProductManager {
     public List<Product> getAll() {
         List<Product> productList = new ArrayList<>();
         try {
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("Select * from product");
+            String sql = "Select * from product";
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ResultSet resultSet = ps.executeQuery();
             while (resultSet.next()) {
                 productList.add(getProductFromResultSet(resultSet));
             }
@@ -72,9 +75,10 @@ public class ProductManager {
 
 
     public void removeById(int productId) {
-        String sql = "DELETE FROM product WHERE id = " + productId;
-        try (Statement statement = connection.createStatement()) {
-            statement.executeUpdate(sql);
+        String sql = "DELETE FROM product WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, String.valueOf(productId));
+            ps.executeUpdate(sql);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }

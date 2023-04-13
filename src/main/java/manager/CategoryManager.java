@@ -26,8 +26,9 @@ public class CategoryManager {
     }
 
     public Category getById(int id) {
-        try (Statement statement = connection.createStatement()) {
-            ResultSet resultSet = statement.executeQuery("Select * from category where id = " + id);
+        String sql = "Select * from category where id = " + id;
+        try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ResultSet resultSet = ps.executeQuery();
             if (resultSet.next()) {
                 return getCategoryFromResultSet(resultSet);
             }
@@ -40,8 +41,9 @@ public class CategoryManager {
     public List<Category> getAll() {
         List<Category> categoryList = new ArrayList<>();
         try {
-            Statement statement = connection.createStatement();
-            ResultSet resultSet = statement.executeQuery("Select * from category");
+            String sql = "Select * from category";
+            PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS);
+            ResultSet resultSet = ps.executeQuery();
             while (resultSet.next()) {
                 categoryList.add(getCategoryFromResultSet(resultSet));
             }
@@ -59,9 +61,10 @@ public class CategoryManager {
     }
 
     public void removeById(int categoryId) {
-        String sql = "DELETE FROM category WHERE id = " + categoryId;
-        try (Statement statement = connection.createStatement()) {
-            statement.executeUpdate(sql);
+        String sql = "DELETE FROM category WHERE id = ?";
+        try (PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)) {
+            ps.setString(1, String.valueOf(categoryId));
+            ps.executeUpdate(sql);
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
@@ -69,9 +72,11 @@ public class CategoryManager {
 
 
     public void update(Category category) {
-        String sql = "UPDATE category SET name = '%s' WHERE id = %d";
-        try(Statement statement = connection.createStatement()){
-            statement.executeUpdate(String.format(sql, category.getName(), category.getId()));
+        String sql = "UPDATE category SET name = ? WHERE id = ?";
+        try(PreparedStatement ps = connection.prepareStatement(sql, Statement.RETURN_GENERATED_KEYS)){
+            ps.setString(1,category.getName());
+            ps.setString(2, String.valueOf(category.getId()));
+            ps.executeUpdate();
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
