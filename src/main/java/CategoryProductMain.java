@@ -43,16 +43,16 @@ public class CategoryProductMain {
                     updateProductById();
                     break;
                 case "5":
-                    printSumOfProducts();
+                    System.out.println(productManager.sumOfProducts());
                     break;
                 case "6":
-                    printMaxOfPriceProduct();
+                    System.out.println(productManager.maxOfPriceProduct());
                     break;
                 case "7":
-                    printMinOfPriceProduct();
+                    System.out.println(productManager.minOfPriceProduct());
                     break;
                 case "8":
-                    printAvgOfPriceProduct();
+                    System.out.println(productManager.avgOfPriceProduct());
                     break;
                 default:
                     System.out.println("Invalid Command");
@@ -234,24 +234,5 @@ public class CategoryProductMain {
         }else{
             System.out.println("Wrong category id");
         }
-    }
-
-    private static void printSumOfProducts() {
-        System.out.println(productManager.sumOfProducts());
-    }
-
-    private static void printMaxOfPriceProduct() {
-        System.out.println(productManager.maxOfPriceProduct());
-
-    }
-
-    private static void printMinOfPriceProduct() {
-        System.out.println(productManager.minOfPriceProduct());
-
-    }
-
-    private static void printAvgOfPriceProduct() {
-        System.out.println(productManager.avgOfPriceProduct());
-
     }
 }
