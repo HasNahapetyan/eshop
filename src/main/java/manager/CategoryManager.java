@@ -75,6 +75,5 @@ public class CategoryManager {
         } catch (SQLException e) {
             throw new RuntimeException(e);
         }
-
     }
 }
